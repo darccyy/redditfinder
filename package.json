@@ -1,0 +1,35 @@
+{
+  "name": "redditfinder",
+  "version": "1.0.0",
+  "description": "Program to find available reddit subs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darccyy/redditfinder.git"
+  },
+  "keywords": [
+    "reddit",
+    "subreddit",
+    "sub",
+    "subs",
+    "subreddits",
+    "find",
+    "search",
+    "finder",
+    "searcher"
+  ],
+  "author": "darcy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/darccyy/redditfinder/issues"
+  },
+  "homepage": "https://github.com/darccyy/redditfinder#readme",
+  "dependencies": {
+    "fnct": "^1.1.28",
+    "puppeteer": "^10.0.0"
+  }
+}

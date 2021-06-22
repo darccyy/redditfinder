@@ -7,11 +7,17 @@ const path = require("path");
 const puppeteer = require("puppeteer");
 
 var fails = 0;
+var output = [];
 var headless = true;
 // headless = false; // Uncomment to see browser
 async function main() {
   fails = 0;
-  fs.writeFileSync(path.join(__dirname, "output.txt"), "");
+  output = [
+    "RedditFinder Output {time}\n".format({
+      time: Date.now(),
+    }),
+  ];
+  write();
   // Start puppeteer
   console.log("Launching");
   while (true) {
@@ -78,20 +84,22 @@ async function main() {
 
   console.log("Beginning Search\n");
   subs = fs.readFileSync(path.join(__dirname, "input.txt")).toString().toLowerCase().split("\r\n");
+  if (subs.length > 300) {
+    subs.push("malk"); // hehehe
+  }
   subs = subs.shuffle() // Shuffles the order
-  output = [];
   for (i = 0; i < subs.length; i++) {
     // Check if name is valid
     if (!subs || subs[i].replaceAll(/[a-z0-9_]{3,21}/gi, "")) {
       continue;
     }
 
-    url = "https://www.reddit.com/r/{0}".format(subs[i]);
+    url = "https://reddit.com/r/{0}".format(subs[i]);
     process.stdout.write("{perc}% - {name} {url}{fill}".format({
       perc: ((i / subs.length) * 100).round(2).toFixed(2).fill(5),
-      name: "< {0} >".format(subs[i]).capWords().center(15, " ", ),
+      name: "< {0} >".format(subs[i]).capWords().center(22, " ", ),
       url,
-      fill: " ".repeat(15 - subs[i].length),
+      fill: " ".repeat(Math.max(0, 18 - subs[i].length)),
     }));
 
     // Navigate to link
@@ -120,14 +128,16 @@ async function main() {
     }
 
     // Output value
-    console.log(available ? ":) Available <--------" : "Unavailable :(");
+    console.log((available ? ":) Available <------- {name}" : "Unavailable :(").format({
+      name: subs[i],
+    }));
     if (available) {
-      output.push("{name}{fill}https://reddit.com/r/{0}".format({
+      output.push("{name}{fill}https://reddit.com/r/{name}".format({
         name: subs[i],
-        fill: " ".repeat(35 - subs[i].length),
+        fill: " ".repeat(25 - subs[i].length),
       }));
     }
-    fs.writeFileSync(path.join(__dirname, "output.txt"), output.join("\r\n"));
+    write();
   }
 
   // Final things
@@ -152,4 +162,9 @@ function error() {
   return new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
+}
+
+// Write output to file
+function write() {
+  fs.writeFileSync(path.join(__dirname, "output.txt"), output.join("\r\n"));
 }
